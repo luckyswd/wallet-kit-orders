@@ -1,4 +1,5 @@
-1. в docker/ngrok скопировать ngrok-example.yml и вставить ngrok.yml
+BACKEND
+1. в docker/ngrok cp ngrok-example.yml ngrok.yml
 2. в файле ngrok.yml изменить authtoken и domain
 
 .env изменить:
@@ -10,3 +11,9 @@
 6. SHOPIFY_FRONT_URL - урл фронта
 
 Запустить приложения: make up
+
+FRONTEND
+node 22
+1. cd frontend
+2. npm i
+3. make build-front(запускает npm run build и весь билд ложит в backend/public)
