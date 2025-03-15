@@ -8,3 +8,5 @@ stop:
 	docker-compose stop
 build:
 	docker-compose build
+build-front:
+	cd frontend && npm run build && cp -r build/* ../backend/public/
