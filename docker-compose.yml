@@ -1,0 +1,72 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-wallet-kit-orders-BE
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./app:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - app-network
+
+  php:
+    container_name: php-wallet-kit-orders-BE
+    restart: unless-stopped
+    build: docker/php
+    links:
+      - postgres
+    volumes:
+      - ./BE:/var/www/html
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:13.3
+    container_name: postgres-wallet-kit-orders-BE
+    environment:
+      POSTGRES_DB: "test"
+      POSTGRES_USER: "test"
+      POSTGRES_PASSWORD: "test"
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    container_name: redis-wallet-kit-orders-BE
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    command: ['--requirepass test123']
+
+  ngrok:
+    container_name: ngrok-wallet-kit-orders-BE
+    image: ngrok/ngrok:3
+    restart: unless-stopped
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./docker/ngrok/ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 4040:4040
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
