@@ -2,7 +2,7 @@ version: "3"
 services:
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx-wallet-kit-orders-BE
+    container_name: nginx-wallet-kit-orders
     restart: unless-stopped
     ports:
       - "80:80"
@@ -13,7 +13,7 @@ services:
       - php
 
   php:
-    container_name: php-wallet-kit-orders-BE
+    container_name: php-wallet-kit-orders
     restart: unless-stopped
     build: docker/php
     links:
@@ -24,25 +24,27 @@ services:
       - postgres
 
   postgres:
-    image: postgres:13.3
-    container_name: postgres-wallet-kit-orders-BE
+    image: postgres:16.2
+    container_name: postgres-wallet-kit-orders
     environment:
       POSTGRES_DB: "test"
       POSTGRES_USER: "test"
       POSTGRES_PASSWORD: "test"
+    volumes:
+      - ./docker/postgresql:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   redis:
     image: redis:latest
-    container_name: redis-wallet-kit-orders-BE
+    container_name: redis-wallet-kit-orders
     restart: unless-stopped
     ports:
       - "6379:6379"
     command: ['--requirepass test123']
 
   ngrok:
-    container_name: ngrok-wallet-kit-orders-BE
+    container_name: ngrok-wallet-kit-orders
     image: ngrok/ngrok:3
     restart: unless-stopped
     command:
